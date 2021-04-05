@@ -84,4 +84,24 @@ public final class Updater {
 
         return true
     }
+
+    public static func notify(title: String, message: String) -> Bool {
+        let task = Process()
+
+        task.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
+        task.arguments = [
+            "-e",
+            """
+                tell me to display notification "\(message)" with title "\(title)"
+            """,
+        ]
+
+        do {
+            try task.run()
+        } catch {
+            return false
+        }
+
+        return true
+    }
 }

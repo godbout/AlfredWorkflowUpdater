@@ -33,76 +33,40 @@ public final class Updater {
         return info["version"] as! String
     }
 
+    public static func update(with fileURL: String) -> Bool {
+        guard let url = URL(string: fileURL) else { return false }
 
-    //    public static func notify(title: String, message: String) -> Bool {
-    //        let task = Process()
-    //
-    //        task.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
-    //        task.arguments = [
-    //            "-e",
-    //            """
-    //                tell me to display notification "\(message)" with title "\(title)"
-    //            """,
-    //        ]
-    //
-    //        do {
-    //            try task.run()
-    //        } catch {
-    //            return false
-    //        }
-    //
-    //        return true
-    //    }
-    //
-    //    public static func update(with fileURL: String) -> Bool {
-    //        guard let url = URL(string: fileURL) else { return false }
-    //
-    //        let semaphore = DispatchSemaphore(value: 0)
-    //
-    //        URLSession.shared.downloadTask(with: url) { location, _, _ in
-    //            if let location = location {
-    //                _ = openWorkflowFile(location: location)
-    //            }
-    //
-    //            semaphore.signal()
-    //        }.resume()
-    //
-    //        semaphore.wait()
-    //
-    //        return true
-    //    }
-    //
-    //    public static func open(page releasePage: String) -> Bool {
-    //        let task = Process()
-    //
-    //        task.executableURL = URL(fileURLWithPath: "/usr/bin/open")
-    //        task.arguments = [releasePage]
-    //
-    //        do {
-    //            try task.run()
-    //        } catch {
-    //            return false
-    //        }
-    //
-    //        return true
-    //    }
-    //
-    //    private static func openWorkflowFile(location: URL) -> Bool {
-    //        let documentsURL = try? FileManager.default.url(for: .downloadsDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-    //        let savedURL = documentsURL?.appendingPathComponent("KAT.alfredworkflow")
-    //        try? FileManager.default.moveItem(at: location, to: savedURL!)
-    //
-    //        let task = Process()
-    //
-    //        task.executableURL = URL(fileURLWithPath: "/usr/bin/open")
-    //        task.arguments = [savedURL!.path]
-    //
-    //        do {
-    //            try task.run()
-    //        } catch {
-    //            return false
-    //        }
-    //
-    //        return true
-    //    }
+        let semaphore = DispatchSemaphore(value: 0)
+
+        URLSession.shared.downloadTask(with: url) { location, _, _ in
+            if let location = location {
+                _ = openWorkflowFile(location: location)
+            }
+
+            semaphore.signal()
+        }.resume()
+
+        semaphore.wait()
+
+        return true
+    }
+
+    private static func openWorkflowFile(location: URL) -> Bool {
+        let documentsURL = try? FileManager.default.url(for: .downloadsDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+        let savedURL = documentsURL?.appendingPathComponent("KAT.alfredworkflow")
+        try? FileManager.default.moveItem(at: location, to: savedURL!)
+
+        let task = Process()
+
+        task.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+        task.arguments = [savedURL!.path]
+
+        do {
+            try task.run()
+        } catch {
+            return false
+        }
+
+        return true
+    }
 }

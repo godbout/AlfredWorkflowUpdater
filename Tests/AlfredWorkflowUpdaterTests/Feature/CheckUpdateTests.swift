@@ -38,16 +38,15 @@ final class CheckUpdateTests: AlfredWorkflowUpdaterTestCase {
 
     func test_that_the_comparison_of_release_version_numbers_work_properly() {
         Self.setLocalWorkflowVersion(to: "1.3")
-
         let release = Updater.checkUpdate(for: "godbout/AlfredDummy")
-
         XCTAssertNotNil(release)
 
-
         Self.setLocalWorkflowVersion(to: "1.3.4")
-
         let anotherRelease = Updater.checkUpdate(for: "godbout/AlfredDummy")
-
         XCTAssertNotNil(anotherRelease)
+
+        Self.setLocalWorkflowVersion(to: "1.3.40")
+        let anotherOtherRelease = Updater.checkUpdate(for: "godbout/AlfredDummy")
+        XCTAssertNil(anotherOtherRelease)
     }
 }

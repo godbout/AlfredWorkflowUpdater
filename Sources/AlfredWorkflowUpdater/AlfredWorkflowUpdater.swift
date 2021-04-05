@@ -69,4 +69,19 @@ public final class Updater {
 
         return true
     }
+
+    public static func open(page releasePage: String) -> Bool {
+        let task = Process()
+
+        task.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+        task.arguments = [releasePage]
+
+        do {
+            try task.run()
+        } catch {
+            return false
+        }
+
+        return true
+    }
 }

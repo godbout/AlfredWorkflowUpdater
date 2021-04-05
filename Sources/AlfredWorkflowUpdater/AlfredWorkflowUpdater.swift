@@ -44,7 +44,8 @@ public final class Updater {
             }
 
             semaphore.signal()
-        }.resume()
+        }
+        .resume()
 
         semaphore.wait()
 

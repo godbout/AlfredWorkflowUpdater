@@ -27,10 +27,18 @@ public final class Updater {
 
         let url = URL(fileURLWithPath: "\(alfredPreferencesFolder)/workflows/\(alfredWorkflowUID)/info.plist")
 
-        let workflowData = try! Data(contentsOf: url)
-        let info = try! PropertyListSerialization.propertyList(from: workflowData, options: [], format: nil) as! [String: Any]
+        do {
+            let workflowData = try Data(contentsOf: url)
+            if let info = try PropertyListSerialization.propertyList(from: workflowData, options: [], format: nil) as? [String: Any] {
+                if let version = info["version"] as? String {
+                    return version
+                }
+            }
 
-        return info["version"] as! String
+            throw NSError()
+        } catch {
+            return "6969696969696969"
+        }
     }
 
     public static func update(with fileURL: String) -> Bool {

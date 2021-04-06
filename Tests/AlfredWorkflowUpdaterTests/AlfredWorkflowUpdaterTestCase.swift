@@ -38,13 +38,18 @@ class AlfredWorkflowUpdaterTestCase: XCTestCase {
 
         let url = URL(fileURLWithPath: "\(alfredPreferencesFolder)/workflows/\(alfredWorkflowUID)/info.plist")
 
-        let workflowData = try! Data(contentsOf: url)
-        var info = try! PropertyListSerialization.propertyList(from: workflowData, options: [], format: nil) as! [String: Any]
+        do {
+            let workflowData = try Data(contentsOf: url)
+            if var info = try PropertyListSerialization.propertyList(from: workflowData, options: [], format: nil) as? [String: Any] {
+                info["version"] = version
 
-        info["version"] = version
+                let writeInfo = try PropertyListSerialization.data(fromPropertyList: info, format: .xml, options: 0)
+                try writeInfo.write(to: url)
+            }
 
-        if let writeInfo = try? PropertyListSerialization.data(fromPropertyList: info, format: .xml, options: 0) {
-            try? writeInfo.write(to: url)
+            throw NSError()
+        } catch {
+            XCTFail("couldn't mock local Dummy workflow version")
         }
     }
 }

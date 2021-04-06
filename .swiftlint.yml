@@ -109,3 +109,6 @@ custom_rules:
     message: Rule Test Function mustn't end with `rule`
     regex: func\s*test\w+(r|R)ule\(\)
     severity: error
+
+trailing_comma:
+  mandatory_comma: true

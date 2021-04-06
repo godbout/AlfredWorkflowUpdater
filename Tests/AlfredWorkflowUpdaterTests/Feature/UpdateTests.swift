@@ -9,4 +9,14 @@ final class UpdateTests: AlfredWorkflowUpdaterTestCase {
             Updater.update(with: file)
         )
     }
+
+    func test_that_an_update_works_even_if_an_old_version_of_the_workflow_is_in_the_downloads_folder() {
+        let file = "https://github.com/godbout/AlfredDummy/releases/download/1.3.37/AlfredDummy.alfredworkflow"
+
+        Self.mockAlreadyDownloadedAlfredDummyWorkflowToUserDownloadsFolder()
+
+        XCTAssertTrue(
+            Updater.update(with: file)
+        )
+    }
 }

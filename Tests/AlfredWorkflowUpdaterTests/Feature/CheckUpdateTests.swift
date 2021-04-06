@@ -33,7 +33,10 @@ final class CheckUpdateTests: AlfredWorkflowUpdaterTestCase {
 
         XCTAssertEqual(release?.version, "1.3.37")
         XCTAssertEqual(release?.page, "https://github.com/godbout/AlfredDummy/releases/latest")
-        XCTAssertEqual(release?.file, "https://github.com/godbout/AlfredDummy/releases/download/1.3.37/AlfredDummy.alfredworkflow")
+        XCTAssertEqual(
+            release?.file,
+            "https://github.com/godbout/AlfredDummy/releases/download/1.3.37/AlfredDummy.alfredworkflow"
+        )
     }
 
     func test_that_the_comparison_of_release_version_numbers_work_properly() {

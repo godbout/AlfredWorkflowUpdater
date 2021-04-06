@@ -55,4 +55,21 @@ class AlfredWorkflowUpdaterTestCase: XCTestCase {
             XCTFail("couldn't mock local Dummy workflow version")
         }
     }
+
+    static func mockAlreadyDownloadedAlfredDummyWorkflowToUserDownloadsFolder() {
+        do {
+            let downloadsFolderURL = try FileManager.default.url(
+                for: .downloadsDirectory,
+                in: .userDomainMask,
+                appropriateFor: nil,
+                create: false
+            )
+
+            let oldWorkflowFile = downloadsFolderURL.appendingPathComponent("AlfredDummy.alfredworkflow")
+
+            FileManager.default.createFile(atPath: oldWorkflowFile.path, contents: nil, attributes: nil)
+        } catch {
+            XCTFail("can't create fake AlfredDummy.alfredworkflow in ~/Downloads folder")
+        }
+    }
 }

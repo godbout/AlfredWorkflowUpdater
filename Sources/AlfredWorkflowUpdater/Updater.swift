@@ -61,7 +61,9 @@ public final class Updater {
     }
 
     private static func openWorkflowFile(location: URL) -> Bool {
-        let documentsURL = try? FileManager.default.url(for: .downloadsDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+        let documentsURL = try? FileManager.default.url(
+            for: .downloadsDirectory, in: .userDomainMask, appropriateFor: nil, create: false
+        )
         let savedURL = documentsURL?.appendingPathComponent("KAT.alfredworkflow")
         try? FileManager.default.moveItem(at: location, to: savedURL!)
 

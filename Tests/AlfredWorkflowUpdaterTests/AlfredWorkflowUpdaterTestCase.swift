@@ -17,14 +17,14 @@ class AlfredWorkflowUpdaterTestCase: XCTestCase {
         print("setup")
     }
 
-    static func mockAlfredPreferencesFolder() {
+    private static func mockAlfredPreferencesFolder() {
         var folder = URL(string: #file)!
         folder.deleteLastPathComponent()
 
         Self.setEnvironmentVariable(name: "alfred_preferences", value: folder.path + "/Resources")
     }
 
-    static func mockDummyWorkflowUID() {
+    private static func mockDummyWorkflowUID() {
         Self.setEnvironmentVariable(name: "alfred_workflow_uid", value: "AlfredDummy")
     }
 
@@ -40,11 +40,14 @@ class AlfredWorkflowUpdaterTestCase: XCTestCase {
 
         do {
             let workflowData = try Data(contentsOf: url)
+
             if var info = try PropertyListSerialization.propertyList(from: workflowData, options: [], format: nil) as? [String: Any] {
                 info["version"] = version
 
                 let writeInfo = try PropertyListSerialization.data(fromPropertyList: info, format: .xml, options: 0)
                 try writeInfo.write(to: url)
+
+                return
             }
 
             throw NSError()

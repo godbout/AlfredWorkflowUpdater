@@ -53,7 +53,7 @@ Updater.notify(title: "Alfred Kat", message: "downloading your shit update...")
 
 unfortunately currently the notification is ugly because its icon is not customizable because of macOS but also more because i'm lazy.
 
-**IMAGE OF SHIT NOTIFICATION**
+![Ugly Notification](https://github.com/godbout/AlfredWorkflowUpdater/blob/media/UglyNotification.gif "Ugly Notification")
 
 ## open stuff
 

@@ -26,7 +26,7 @@ usual install through SPM. no idea for Carthage or CocoaPod. if you don't know h
 ```swift
 import AlfredWorkflowUpdater
 
-if let release = Updater.checkUpdater(for: "godbout/AlfredKat") {
+if let release = Updater.checkUpdate(for: "godbout/AlfredKat") {
     print("\(release.version) available. download at \(release.file). release page at \(release.page)")
 }
 ```

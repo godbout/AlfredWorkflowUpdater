@@ -15,6 +15,12 @@ it's a library in Swift for you developers to easily add a way for your users to
 
 currently it only works with GitHub. the main reason for this is
 
+# MANDATORY SCREENSHOT
+
+a very professional demo:
+
+![Alfred Workflow Updater](https://github.com/godbout/AlfredWorkflowUpdater/blob/media/AlfredWorkflowUpdater.gif "Alfred Workflow Updater")
+
 # HOW TO INSTALL
 
 usual install through SPM. no idea for Carthage or CocoaPod. if you don't know how to use SPM please come back later.

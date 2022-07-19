@@ -13,10 +13,10 @@ public final class Updater {
         guard let html = try? String(contentsOf: url) else { return nil }
         guard let document = try? SwiftSoup.parse(html) else { return nil }
 
-        guard let releaseVersion = try? document.select("#repo-content-pjax-container h1").first()?.text() else { return nil }
+        guard let releaseVersion = try? document.select(".octicon-tag + span").first()?.text().trimmingCharacters(in: .whitespaces) else { return nil }
         guard currentVersion().compare(releaseVersion, options: .numeric) == .orderedAscending else { return nil }
 
-        guard let releaseFile = try? document.select("#repo-content-pjax-container div.Box-footer li:nth-child(1) > a").first()?.attr("href") else { return nil }
+        guard let releaseFile = try? document.select(".octicon-package + a").first()?.attr("href") else { return nil }
 
         return (version: releaseVersion, file: "https://github.com\(releaseFile)", page: releasePage)
     }

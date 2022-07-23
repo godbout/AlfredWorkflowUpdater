@@ -12,8 +12,45 @@ public struct UpdateInfo: Codable {
 
 
 public struct Updater {
+    
+    public static func main() -> Int32 {
+        guard CommandLine.arguments.count == 3 else { return 1 }
+        
+        let gitHubRepository = CommandLine.arguments[1]
+        let checkFrequenceInMinutes = CommandLine.arguments[2]
+        
+        let action = ProcessInfo.processInfo.environment["AlfredWorkflowUpdater_action"] 
+        
+        switch action {
+        case "update":
+            // TODO: isn't this confusing? the "localUpateInfo" and "checkUpdateOnline"?
+            guard let localUpdateInfo = localUpdateInfo() else { return 2 }
+            
+            _ = update(with: localUpdateInfo.file)
+        case "open":
+            guard let localUpdateInfo = localUpdateInfo() else { return 2 }
+            
+            _ = open(page: localUpdateInfo.page)
+        default:
+            if let release = checkUpdateOnline(for: gitHubRepository) {
+                guard let alfredWorkflowCache = ProcessInfo.processInfo.environment["alfred_workflow_cache"] else { return 3 }
+                
+                let encoder = PropertyListEncoder()
+                guard let encoded = try? encoder.encode(release) else { return 4 }
+                
+                FileManager.default.createFile(atPath: "\(alfredWorkflowCache)/update_available.plist", contents: encoded)
+            }
+        }
+        
+        return 0
+    }
+    
+}
 
-    public static func localUpdateInfo() -> UpdateInfo? {
+
+extension Updater {
+    
+    static func localUpdateInfo() -> UpdateInfo? {
         guard let alfredWorkflowCache = ProcessInfo.processInfo.environment["alfred_workflow_cache"] else { return nil }
         
         let updateFile = URL(fileURLWithPath: "\(alfredWorkflowCache)/update_available.plist")
@@ -25,7 +62,7 @@ public struct Updater {
         return updateInfo
     }
     
-    public static func checkUpdateOnline(for gitHubRepository: String) -> UpdateInfo? {
+    static func checkUpdateOnline(for gitHubRepository: String) -> UpdateInfo? {
         let releasePage = "https://github.com/\(gitHubRepository)/releases/latest"
         
         guard let url = URL(string: releasePage) else { return nil }
@@ -44,11 +81,11 @@ public struct Updater {
         )
     }
     
-    public static func open(page: String) -> Bool {
+    static func open(page: String) -> Bool {
         open(item: page)
     }
     
-    public static func update(with fileURL: String) -> Bool {
+    static func update(with fileURL: String) -> Bool {
         guard let url = URL(string: fileURL) else { return false }
 
         var updateResult = false

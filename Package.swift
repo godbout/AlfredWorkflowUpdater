@@ -31,12 +31,9 @@ let package = Package(
             dependencies: ["SwiftSoup"]
         ),
         .testTarget(
-            name: "AlfredWorkflowUpdaterTests",
-            dependencies: ["AlfredWorkflowUpdater"]
-        ),
-        .testTarget(
             name: "AlfredWorkflowUpdaterCoreTests",
-            dependencies: ["AlfredWorkflowUpdaterCore"]
+            dependencies: ["AlfredWorkflowUpdaterCore"],
+            resources: [.process("Resources")]
         )
     ]
 )

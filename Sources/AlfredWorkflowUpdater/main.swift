@@ -1,3 +1,4 @@
+import AlfredWorkflowUpdaterCore
 import Foundation
 
 

@@ -2,18 +2,18 @@ import Foundation
 import SwiftSoup
 
 
-struct UpdateInfo: Codable {
+public struct UpdateInfo: Codable {
     
-    let version: String
-    let file: String
-    let page: String
+    public let version: String
+    public let file: String
+    public let page: String
     
 }
 
 
-struct Updater {
+public struct Updater {
 
-    static func localUpdateInfo() -> UpdateInfo? {
+    public static func localUpdateInfo() -> UpdateInfo? {
         guard let alfredWorkflowCache = ProcessInfo.processInfo.environment["alfred_workflow_cache"] else { return nil }
         
         let updateFile = URL(fileURLWithPath: "\(alfredWorkflowCache)/update_available.plist")
@@ -25,7 +25,7 @@ struct Updater {
         return updateInfo
     }
     
-    static func checkUpdateOnline(for gitHubRepository: String) -> UpdateInfo? {
+    public static func checkUpdateOnline(for gitHubRepository: String) -> UpdateInfo? {
         let releasePage = "https://github.com/\(gitHubRepository)/releases/latest"
         
         guard let url = URL(string: releasePage) else { return nil }
@@ -44,11 +44,11 @@ struct Updater {
         )
     }
     
-    static func open(page: String) -> Bool {
+    public static func open(page: String) -> Bool {
         open(item: page)
     }
     
-    static func update(with fileURL: String) -> Bool {
+    public static func update(with fileURL: String) -> Bool {
         guard let url = URL(string: fileURL) else { return false }
 
         var updateResult = false

@@ -1,4 +1,5 @@
 import XCTest
+@testable import AlfredWorkflowUpdaterCore
 
 
 class AlfredWorkflowUpdaterTestCase: XCTestCase {
@@ -8,21 +9,45 @@ class AlfredWorkflowUpdaterTestCase: XCTestCase {
 
         mockAlfredPreferencesFolder()
         mockDummyWorkflowUID()
+        mockAlfredWorkflowCacheFolder()
+    }
+    
+    override func setUp() {
+        Self.removeAlreadyCreatedUpdateInfoFile()
     }
 
     private static func mockAlfredPreferencesFolder() {
         var folder = URL(string: #file)!
         folder.deleteLastPathComponent()
 
-        Self.setEnvironmentVariable(name: "alfred_preferences", value: folder.path + "/Resources")
+        Self.setEnvironmentVariable(name: "alfred_preferences", value: folder.path + "/Resources/AlfredPreferences")
     }
-
+    
     private static func mockDummyWorkflowUID() {
         Self.setEnvironmentVariable(name: "alfred_workflow_uid", value: "AlfredDummy")
+    }
+    
+    private static func mockAlfredWorkflowCacheFolder() {
+        var folder = URL(string: #file)!
+        folder.deleteLastPathComponent()
+        
+        guard let alfredWorkflowUID = ProcessInfo.processInfo.environment["alfred_workflow_uid"] else { return XCTFail() }
+
+        Self.setEnvironmentVariable(name: "alfred_workflow_cache", value: folder.path + "/Resources/Caches/\(alfredWorkflowUID)")
     }
 
     private static func setEnvironmentVariable(name: String, value: String) {
         setenv(name, value, 1)
+    }
+    
+    private static func removeAlreadyCreatedUpdateInfoFile() {
+        guard let alfredWorkflowCache = ProcessInfo.processInfo.environment["alfred_workflow_cache"] else { return XCTFail() }
+        
+        let updateAvailableFile = "\(alfredWorkflowCache)/update_available.plist"
+        
+        if FileManager.default.fileExists(atPath: updateAvailableFile) {
+            guard let _ = try? FileManager.default.removeItem(atPath: updateAvailableFile) else { return XCTFail() }
+        }
     }
 
     static func setLocalWorkflowVersion(to version: String) {
@@ -64,6 +89,15 @@ class AlfredWorkflowUpdaterTestCase: XCTestCase {
         } catch {
             XCTFail("can't create fake AlfredDummy.alfredworkflow in ~/Downloads folder")
         }
+    }
+    
+    static func mockAlreadyCreatedUpdateInfoFile(with updateInfo: UpdateInfo) {
+        guard let alfredWorkflowCache = ProcessInfo.processInfo.environment["alfred_workflow_cache"] else { return XCTFail() }
+        
+        let encoder = PropertyListEncoder()
+        guard let encoded = try? encoder.encode(updateInfo) else { return XCTFail() }
+        
+        FileManager.default.createFile(atPath: "\(alfredWorkflowCache)/update_available.plist", contents: encoded)
     }
     
 }

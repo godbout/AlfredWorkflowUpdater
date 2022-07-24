@@ -10,8 +10,8 @@ class infoFromCacheTests: AlfredWorkflowUpdaterTestCase {
         )
     }
     
-    func test_that_if_there_is_an_updateAvailable_plist_file_then_it_returns_the_correct_info() {
-        Self.mockAlreadyCreatedUpdateInfoFile(with: ReleaseInfo(
+    func test_that_if_there_is_an_updateAvailable_plist_file_then_it_returns_the_correct_info() throws {
+        try Self.mockAlreadyCreatedUpdateInfoFile(with: ReleaseInfo(
             version: "1.3.28",
             file: "https://github.com/godbout/AlfredDummy/releases/download/1.3.28/AlfredDummy.alfredworkflow",
             page: "https://github.com/godbout/AlfredDummy/releases/latest"

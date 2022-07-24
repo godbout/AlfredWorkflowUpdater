@@ -140,8 +140,12 @@ extension AlfredWorkflowUpdaterTestCase {
     }
         
     private static func spoofArguments() {
-        CommandLine.arguments[1] = "godbout/AlfredDummy"
-        CommandLine.arguments[2] = "5"
+        let argumentsCount = CommandLine.arguments.count
+        
+        // currently there's still no way to pass arguments to swift test... which means filling arguments (without appending)
+        // will crash if the index doesn't exist. but if it exists, we need to keep that indice. so here you go.
+        argumentsCount >= 2 ? CommandLine.arguments[1] = "godbout/AlfredDummy" : CommandLine.arguments.append("godbout/AlfredDummy") 
+        argumentsCount >= 3 ? CommandLine.arguments[2] = "5" : CommandLine.arguments.append("5")
     }
 
     private static func setEnvironmentVariable(name: String, value: String) {

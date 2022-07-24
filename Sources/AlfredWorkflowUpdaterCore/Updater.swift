@@ -11,35 +11,35 @@ public struct ReleaseInfo: Codable {
 }
 
 
-// TODO: reorganize
 public struct Updater {
     
     public static func main() -> Int32 {
-        guard CommandLine.arguments.count >= 3 else { return 1 }
         let gitHubRepository = CommandLine.arguments[1]
         let checkFrequency = CommandLine.arguments[2]
         
-        let action = ProcessInfo.processInfo.environment["AlfredWorkflowUpdater_action"]
-        
-        switch action {
+        switch ProcessInfo.processInfo.environment["AlfredWorkflowUpdater_action"] {
+        case "open":
+            guard let info = infoFromCache() else { return 2 }
+            
+            open(page: info.page)
         case "update":
             guard let info = infoFromCache() else { return 2 }
             
             update(with: info.file)
             deleteInfoCacheFile()
-        case "open":
-            guard let info = infoFromCache() else { return 2 }
-            
-            open(page: info.page)
         default:
-            if let release = checkOnline(for: gitHubRepository) {
-                createInfoCacheFile(for: release)
+            if enoughTimeHasElapsed(frequencyBeing: Int(checkFrequency) ?? 1440) {
+                if let release = checkOnline(for: gitHubRepository) {
+                    createInfoCacheFile(for: release)
+                }
+                
+                updateLastCheckedCacheFile()
             }
         }
         
         return 0
     }
-    
+       
 }
 
 
@@ -56,41 +56,12 @@ extension Updater {
         
         return info
     }
-        
-    static func deleteInfoCacheFile() {
-        guard let alfredWorkflowCache = ProcessInfo.processInfo.environment["alfred_workflow_cache"] else { return }
-        
-        let releaseFile = "\(alfredWorkflowCache)/update_available.plist"
-        
-        if FileManager.default.fileExists(atPath: releaseFile) {
-            guard let _ = try? FileManager.default.removeItem(atPath: releaseFile) else { return }
-        }
-    }
-    
-    static func checkOnline(for gitHubRepository: String) -> ReleaseInfo? {
-        let releasePage = "https://github.com/\(gitHubRepository)/releases/latest"
-        
-        guard let url = URL(string: releasePage) else { return nil }
-        guard let html = try? String(contentsOf: url) else { return nil }
-        guard let document = try? SwiftSoup.parse(html) else { return nil }
-        
-        guard let releaseVersion = try? document.select(".octicon-tag + span").first()?.text() else { return nil }
-        guard currentVersion().compare(releaseVersion, options: .numeric) == .orderedAscending else { return nil }
-        
-        guard let releaseFile = try? document.select(".octicon-package + a").first()?.attr("href") else { return nil }
-        
-        return ReleaseInfo(
-            version: releaseVersion,
-            file: "https://github.com\(releaseFile)",
-            page: releasePage
-        )
-    }
     
     @discardableResult
     static func open(page: String) -> Bool {
         open(item: page)
     }
-    
+        
     @discardableResult
     static func update(with fileURL: String) -> Bool {
         guard let url = URL(string: fileURL) else { return false }
@@ -114,13 +85,70 @@ extension Updater {
         return true && updateResult
     }
         
+    static func deleteInfoCacheFile() {
+        guard let alfredWorkflowCache = ProcessInfo.processInfo.environment["alfred_workflow_cache"] else { return }
+        
+        let releaseFile = "\(alfredWorkflowCache)/update_available.plist"
+        
+        if FileManager.default.fileExists(atPath: releaseFile) {
+            guard let _ = try? FileManager.default.removeItem(atPath: releaseFile) else { return }
+        }
+    }
+        
+    static func enoughTimeHasElapsed(frequencyBeing minutes: Int) -> Bool {
+        guard let alfredWorkflowCache = ProcessInfo.processInfo.environment["alfred_workflow_cache"] else { return true }
+        let lastCheckedFile = "\(alfredWorkflowCache)/last_checked.plist"
+        
+        let lastCheckedFileURL = URL(fileURLWithPath: lastCheckedFile)
+        guard let data = try? Data(contentsOf: lastCheckedFileURL) else { return true }
+        let decoder = PropertyListDecoder()
+        guard let date = try? decoder.decode([Date].self, from: data) else { return true }
+        
+        guard let thresholdDate = Calendar.current.date(byAdding: .minute, value: minutes, to: date.first ?? Date()) else { return true }
+        let now = Date()
+        
+        return now > thresholdDate ? true : false
+    }
+    
+    static func checkOnline(for gitHubRepository: String) -> ReleaseInfo? {
+        let releasePage = "https://github.com/\(gitHubRepository)/releases/latest"
+        
+        guard let url = URL(string: releasePage) else { return nil }
+        guard let html = try? String(contentsOf: url) else { return nil }
+        guard let document = try? SwiftSoup.parse(html) else { return nil }
+        
+        guard let releaseVersion = try? document.select(".octicon-tag + span").first()?.text() else { return nil }
+        guard currentVersion().compare(releaseVersion, options: .numeric) == .orderedAscending else { return nil }
+        
+        guard let releaseFile = try? document.select(".octicon-package + a").first()?.attr("href") else { return nil }
+        
+        return ReleaseInfo(
+            version: releaseVersion,
+            file: "https://github.com\(releaseFile)",
+            page: releasePage
+        )
+    }
+    
     static func createInfoCacheFile(for release: ReleaseInfo) {
         guard let alfredWorkflowCache = ProcessInfo.processInfo.environment["alfred_workflow_cache"] else { return }
+        let updateAvailableFile = "\(alfredWorkflowCache)/update_available.plist"
         
         let encoder = PropertyListEncoder()
         guard let encoded = try? encoder.encode(release) else { return }
         
-        FileManager.default.createFile(atPath: "\(alfredWorkflowCache)/update_available.plist", contents: encoded)
+        FileManager.default.createFile(atPath: updateAvailableFile, contents: encoded)
+    }
+    
+    static func updateLastCheckedCacheFile() {
+        guard let alfredWorkflowCache = ProcessInfo.processInfo.environment["alfred_workflow_cache"] else { return }
+        let lastCheckedFile = "\(alfredWorkflowCache)/last_checked.plist"
+        
+        let now = Date()
+        let encoder = PropertyListEncoder()
+        guard let encoded = try? encoder.encode([now]) else { return }
+        
+        try? FileManager.default.removeItem(atPath: lastCheckedFile)
+        FileManager.default.createFile(atPath: lastCheckedFile, contents: encoded)
     }
 
 }

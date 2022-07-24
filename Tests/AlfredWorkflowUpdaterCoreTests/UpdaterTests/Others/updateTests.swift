@@ -3,7 +3,7 @@ import XCTest
 
 
 class updateTests: AlfredWorkflowUpdaterTestCase {
-
+    
     func test_that_the_user_can_download_and_open_the_latest_release() {
         let onlineFile = "https://github.com/godbout/AlfredDummy/releases/download/1.3.37/AlfredDummy.alfredworkflow"
 

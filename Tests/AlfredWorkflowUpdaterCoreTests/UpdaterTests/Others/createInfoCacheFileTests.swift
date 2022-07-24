@@ -4,10 +4,10 @@ import XCTest
 
 class createInfoCacheFileTests: AlfredWorkflowUpdaterTestCase {
     
-    func test_that_it_can_create_the_update_available_plist_file() {
+    func test_that_it_can_create_the_updateAvailable_plist_file() {
         let releaseInfo = ReleaseInfo(
-            version: "1.3.37",
-            file: "https://github.com/godbout/AlfredDummy/releases/download/1.3.37/AlfredDummy.alfredworkflow",
+            version: "1.3.88",
+            file: "https://github.com/godbout/AlfredDummy/releases/download/1.3.88/AlfredDummy.alfredworkflow",
             page: "https://github.com/godbout/AlfredDummy/releases/latest"
         )
         
@@ -17,8 +17,8 @@ class createInfoCacheFileTests: AlfredWorkflowUpdaterTestCase {
                 
         let infoFromCache = Updater.infoFromCache()
         
-        XCTAssertEqual(infoFromCache?.version, "1.3.37")
-        XCTAssertEqual(infoFromCache?.file, "https://github.com/godbout/AlfredDummy/releases/download/1.3.37/AlfredDummy.alfredworkflow")
+        XCTAssertEqual(infoFromCache?.version, "1.3.88")
+        XCTAssertEqual(infoFromCache?.file, "https://github.com/godbout/AlfredDummy/releases/download/1.3.88/AlfredDummy.alfredworkflow")
         XCTAssertEqual(infoFromCache?.page, "https://github.com/godbout/AlfredDummy/releases/latest")
     }
     

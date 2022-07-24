@@ -10,6 +10,7 @@ class AlfredWorkflowUpdaterTestCase: XCTestCase {
         mockAlfredPreferencesFolder()
         mockDummyWorkflowUID()
         mockAlfredWorkflowCacheFolder()
+        spoofArguments() 
     }
     
     override func setUp() {
@@ -34,6 +35,11 @@ class AlfredWorkflowUpdaterTestCase: XCTestCase {
         guard let alfredWorkflowUID = ProcessInfo.processInfo.environment["alfred_workflow_uid"] else { return XCTFail() }
 
         Self.setEnvironmentVariable(name: "alfred_workflow_cache", value: folder.path + "/Resources/Caches/\(alfredWorkflowUID)")
+    }
+        
+    private static func spoofArguments() {
+        CommandLine.arguments[1] = "godbout/AlfredDummy"
+        CommandLine.arguments[2] = "5"
     }
 
     private static func setEnvironmentVariable(name: String, value: String) {
@@ -91,13 +97,17 @@ class AlfredWorkflowUpdaterTestCase: XCTestCase {
         }
     }
     
-    static func mockAlreadyCreatedUpdateInfoFile(with updateInfo: UpdateInfo) {
+    static func mockAlreadyCreatedUpdateInfoFile(with releaseInfo: ReleaseInfo) {
         guard let alfredWorkflowCache = ProcessInfo.processInfo.environment["alfred_workflow_cache"] else { return XCTFail() }
         
         let encoder = PropertyListEncoder()
-        guard let encoded = try? encoder.encode(updateInfo) else { return XCTFail() }
+        guard let encoded = try? encoder.encode(releaseInfo) else { return XCTFail() }
         
         FileManager.default.createFile(atPath: "\(alfredWorkflowCache)/update_available.plist", contents: encoded)
+    }
+    
+    static func mockWorkflowActionVariable(with action: String) {
+        setEnvironmentVariable(name: "AlfredWorkflowUpdater_action", value: action)
     }
     
 }

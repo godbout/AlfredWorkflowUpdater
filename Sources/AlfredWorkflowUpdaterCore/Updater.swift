@@ -2,7 +2,7 @@ import Foundation
 import SwiftSoup
 
 
-public struct UpdateInfo: Codable {
+public struct ReleaseInfo: Codable {
     
     public let version: String
     public let file: String
@@ -11,29 +11,29 @@ public struct UpdateInfo: Codable {
 }
 
 
+// TODO: reorganize
 public struct Updater {
     
     public static func main() -> Int32 {
-        guard CommandLine.arguments.count == 3 else { return 1 }
+        guard CommandLine.arguments.count >= 3 else { return 1 }
         let gitHubRepository = CommandLine.arguments[1]
+        let checkFrequency = CommandLine.arguments[2]
         
-        switch ProcessInfo.processInfo.environment["AlfredWorkflowUpdater_action"] {
+        let action = ProcessInfo.processInfo.environment["AlfredWorkflowUpdater_action"]
+        
+        switch action {
         case "update":
-            guard let updateInfo = updateInfoFromCache() else { return 2 }
+            guard let info = infoFromCache() else { return 2 }
             
-            _ = update(with: updateInfo.file)
+            update(with: info.file)
+            deleteInfoCacheFile()
         case "open":
-            guard let updateInfo = updateInfoFromCache() else { return 2 }
+            guard let info = infoFromCache() else { return 2 }
             
-            _ = open(page: updateInfo.page)
+            open(page: info.page)
         default:
-            if let release = checkForUpdateOnline(for: gitHubRepository) {
-                guard let alfredWorkflowCache = ProcessInfo.processInfo.environment["alfred_workflow_cache"] else { return 3 }
-                
-                let encoder = PropertyListEncoder()
-                guard let encoded = try? encoder.encode(release) else { return 4 }
-                
-                FileManager.default.createFile(atPath: "\(alfredWorkflowCache)/update_available.plist", contents: encoded)
+            if let release = checkOnline(for: gitHubRepository) {
+                createInfoCacheFile(for: release)
             }
         }
         
@@ -45,19 +45,29 @@ public struct Updater {
 
 extension Updater {
     
-    static func updateInfoFromCache() -> UpdateInfo? {
+    static func infoFromCache() -> ReleaseInfo? {
         guard let alfredWorkflowCache = ProcessInfo.processInfo.environment["alfred_workflow_cache"] else { return nil }
         
         let updateFile = URL(fileURLWithPath: "\(alfredWorkflowCache)/update_available.plist")
         guard let updateData = try? Data(contentsOf: updateFile) else { return nil }
         
         let decoder = PropertyListDecoder()
-        guard let updateInfo = try? decoder.decode(UpdateInfo.self, from: updateData) else { return nil }
+        guard let info = try? decoder.decode(ReleaseInfo.self, from: updateData) else { return nil }
         
-        return updateInfo
+        return info
+    }
+        
+    static func deleteInfoCacheFile() {
+        guard let alfredWorkflowCache = ProcessInfo.processInfo.environment["alfred_workflow_cache"] else { return }
+        
+        let releaseFile = "\(alfredWorkflowCache)/update_available.plist"
+        
+        if FileManager.default.fileExists(atPath: releaseFile) {
+            guard let _ = try? FileManager.default.removeItem(atPath: releaseFile) else { return }
+        }
     }
     
-    static func checkForUpdateOnline(for gitHubRepository: String) -> UpdateInfo? {
+    static func checkOnline(for gitHubRepository: String) -> ReleaseInfo? {
         let releasePage = "https://github.com/\(gitHubRepository)/releases/latest"
         
         guard let url = URL(string: releasePage) else { return nil }
@@ -69,17 +79,19 @@ extension Updater {
         
         guard let releaseFile = try? document.select(".octicon-package + a").first()?.attr("href") else { return nil }
         
-        return UpdateInfo(
+        return ReleaseInfo(
             version: releaseVersion,
             file: "https://github.com\(releaseFile)",
             page: releasePage
         )
     }
     
+    @discardableResult
     static func open(page: String) -> Bool {
         open(item: page)
     }
     
+    @discardableResult
     static func update(with fileURL: String) -> Bool {
         guard let url = URL(string: fileURL) else { return false }
 
@@ -100,6 +112,15 @@ extension Updater {
         semaphore.wait()
 
         return true && updateResult
+    }
+        
+    static func createInfoCacheFile(for release: ReleaseInfo) {
+        guard let alfredWorkflowCache = ProcessInfo.processInfo.environment["alfred_workflow_cache"] else { return }
+        
+        let encoder = PropertyListEncoder()
+        guard let encoded = try? encoder.encode(release) else { return }
+        
+        FileManager.default.createFile(atPath: "\(alfredWorkflowCache)/update_available.plist", contents: encoded)
     }
 
 }

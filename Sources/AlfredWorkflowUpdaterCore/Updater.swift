@@ -15,24 +15,19 @@ public struct Updater {
     
     public static func main() -> Int32 {
         guard CommandLine.arguments.count == 3 else { return 1 }
-        
         let gitHubRepository = CommandLine.arguments[1]
-        let checkFrequenceInMinutes = CommandLine.arguments[2]
         
-        let action = ProcessInfo.processInfo.environment["AlfredWorkflowUpdater_action"] 
-        
-        switch action {
+        switch ProcessInfo.processInfo.environment["AlfredWorkflowUpdater_action"] {
         case "update":
-            // TODO: isn't this confusing? the "localUpateInfo" and "checkUpdateOnline"?
-            guard let localUpdateInfo = localUpdateInfo() else { return 2 }
+            guard let updateInfo = updateInfoFromCache() else { return 2 }
             
-            _ = update(with: localUpdateInfo.file)
+            _ = update(with: updateInfo.file)
         case "open":
-            guard let localUpdateInfo = localUpdateInfo() else { return 2 }
+            guard let updateInfo = updateInfoFromCache() else { return 2 }
             
-            _ = open(page: localUpdateInfo.page)
+            _ = open(page: updateInfo.page)
         default:
-            if let release = checkUpdateOnline(for: gitHubRepository) {
+            if let release = checkForUpdateOnline(for: gitHubRepository) {
                 guard let alfredWorkflowCache = ProcessInfo.processInfo.environment["alfred_workflow_cache"] else { return 3 }
                 
                 let encoder = PropertyListEncoder()
@@ -50,7 +45,7 @@ public struct Updater {
 
 extension Updater {
     
-    static func localUpdateInfo() -> UpdateInfo? {
+    static func updateInfoFromCache() -> UpdateInfo? {
         guard let alfredWorkflowCache = ProcessInfo.processInfo.environment["alfred_workflow_cache"] else { return nil }
         
         let updateFile = URL(fileURLWithPath: "\(alfredWorkflowCache)/update_available.plist")
@@ -62,7 +57,7 @@ extension Updater {
         return updateInfo
     }
     
-    static func checkUpdateOnline(for gitHubRepository: String) -> UpdateInfo? {
+    static func checkForUpdateOnline(for gitHubRepository: String) -> UpdateInfo? {
         let releasePage = "https://github.com/\(gitHubRepository)/releases/latest"
         
         guard let url = URL(string: releasePage) else { return nil }

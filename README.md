@@ -35,6 +35,8 @@ BOOM. Done.
 
 Better, a video:
 
+https://user-images.githubusercontent.com/121373/180831445-2a6f61bc-4cd9-4277-9f68-8ce08fe83e04.mp4
+
 # Any concrete example?
 
 Those Workflows are using the Alfred Workflow Updater:

@@ -32,8 +32,8 @@ You call Alfred Workflow Updater with 2 parameters:
 1. your GitHub repo, like: "[godbout/WooshyWindowToTheForeground](https://github.com/godbout/WooshyWindowToTheForeground)"
 2. the check frequency you want, in minutes, like: "60"
 
-Alfred Workflow Updater will check if there's a file called `last_checked.plist` in your Workflow cache folder, and when was the last time the check was made.
-If the threshold is passed, Alfred Workflow Updater checks online if there's an update available for your Workflow, comparing your current local Workflow version against the online latest version available on GitHub.
+Alfred Workflow Updater writes a file called `last_checked.plist` in your Workflow cache folder that holds when the last online check was made.
+When the threshold is passed, Alfred Workflow Updater checks online if there's an update available for your Workflow, comparing your current local Workflow version against the online latest version available on GitHub.
 If a an update is found, Alfred Workflow Updater drops an `update_available.plist` file in your Workflow cache folder. This file contains your latest release info (version, file URL, page URL).
 
 All you have to do is pick up that file and show the update whenever you want.

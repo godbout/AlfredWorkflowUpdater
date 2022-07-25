@@ -2,7 +2,7 @@ import XCTest
 @testable import AlfredWorkflowUpdaterCore
 
 
-class infoFromCacheTests: AlfredWorkflowUpdaterTestCase {
+class InfoFromCacheTests: AlfredWorkflowUpdaterTestCase {
 
     func test_that_if_there_is_no_updateAvailable_plist_file_then_it_returns_nil() {
         XCTAssertNil(

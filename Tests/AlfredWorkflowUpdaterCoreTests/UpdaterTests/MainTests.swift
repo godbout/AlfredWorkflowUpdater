@@ -6,11 +6,11 @@ import XCTest
 // but i let some internal, to extra test them individually. it's not needed but that'll make
 // the testing more solid. usually i wouldn't do this because it pollutes the test suite, but that
 // Swift Package should almost never change. so the rest is testing in Others.
-class mainTests: AlfredWorkflowUpdaterTestCase {}
+class MainTests: AlfredWorkflowUpdaterTestCase {}
 
 
 // update
-extension mainTests {
+extension MainTests {
     
     func test_that_when_the_action_is_update_the_latest_version_of_the_Workflow_is_downloaded() {
         Self.mockAlreadyCreatedUpdateInfoFile()
@@ -37,7 +37,7 @@ extension mainTests {
 
 
 // open
-extension mainTests {
+extension MainTests {
     
     func test_that_when_the_action_is_open_it_supposedly_opens_the_release_page_and_returns_0() {
         Self.mockAlreadyCreatedUpdateInfoFile()
@@ -50,7 +50,7 @@ extension mainTests {
 
 
 // check
-extension mainTests {
+extension MainTests {
     
     func test_that_when_there_is_no_specific_action_called_and_the_frequency_threshold_has_not_passed_then_there_is_no_online_check_and_no_creation_of_updateAvailable_plist() throws {
         try Self.mockLastChecked(toMinutesAgo: 5)
@@ -60,8 +60,8 @@ extension mainTests {
         
         _ = Updater.main()
         
-        let updateAvailablePlistFilePath = try XCTUnwrap(Self.updateAvailablePlistFilePath)
-        XCTAssertFalse(FileManager.default.fileExists(atPath: updateAvailablePlistFilePath))
+        let updateAvailableFile = try XCTUnwrap(Self.updateAvailableFile)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: updateAvailableFile))
     }
     
     func test_that_when_there_is_no_specific_action_called_and_the_frequency_threshold_has_not_passed_then_the_lastCheckedCacheFile_is_not_updated() throws {
@@ -69,9 +69,9 @@ extension mainTests {
         Self.mockWorkflowActionVariable(with: "")
         CommandLine.arguments[2] = "60"
         
-        let lastCheckedBefore = Self.lastChecked()
+        let lastCheckedBefore = try XCTUnwrap(Self.lastCheckedFile)
         _ = Updater.main()
-        let lastCheckedAfter = Self.lastChecked()
+        let lastCheckedAfter = try XCTUnwrap(Self.lastCheckedFile)
         
         XCTAssertEqual(lastCheckedBefore, lastCheckedAfter)
     }
@@ -84,8 +84,8 @@ extension mainTests {
         
         _ = Updater.main()
         
-        let updateAvailablePlistFilePath = try XCTUnwrap(Self.updateAvailablePlistFilePath)
-        XCTAssertFalse(FileManager.default.fileExists(atPath: updateAvailablePlistFilePath))
+        let updateAvailableFile = try XCTUnwrap(Self.updateAvailableFile)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: updateAvailableFile))
     }
     
     func test_that_when_there_is_no_specific_action_called_and_the_frequency_threshold_has_passed_and_there_is_an_available_update_then_the_updateAvailable_plist_files_get_created() throws {
@@ -96,8 +96,8 @@ extension mainTests {
         
         _ = Updater.main()
         
-        let updateAvailablePlistFilePath = try XCTUnwrap(Self.updateAvailablePlistFilePath)
-        XCTAssertTrue(FileManager.default.fileExists(atPath: updateAvailablePlistFilePath))
+        let updateAvailableFile = try XCTUnwrap(Self.updateAvailableFile)
+        XCTAssertTrue(FileManager.default.fileExists(atPath: updateAvailableFile))
     }
 
     func test_that_when_there_is_no_specific_action_called_and_the_frequency_threshold_has_passed_then_the_lastCheckedCacheFile_is_updated() throws {
@@ -105,9 +105,9 @@ extension mainTests {
         Self.mockWorkflowActionVariable(with: "")
         CommandLine.arguments[2] = "4"
         
-        let lastCheckedBefore = Self.lastChecked()
+        let lastCheckedBefore = try XCTUnwrap(Self.lastCheckedFile)
         _ = Updater.main()
-        let lastCheckedAfter = Self.lastChecked()
+        let lastCheckedAfter = try XCTUnwrap(Self.lastCheckedFile)
         
         XCTAssertNotEqual(lastCheckedBefore, lastCheckedAfter)
     }

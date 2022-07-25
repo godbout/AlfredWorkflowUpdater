@@ -2,7 +2,7 @@ import XCTest
 @testable import AlfredWorkflowUpdaterCore
 
 
-class checkOnlineTests: AlfredWorkflowUpdaterTestCase {
+class CheckOnlineTests: AlfredWorkflowUpdaterTestCase {
     
     func test_that_there_is_no_release_if_the_latest_online_is_equal_to_the_current_user_s_one() {
         Self.setLocalWorkflowVersion(to: "1.3.37")

@@ -69,9 +69,9 @@ extension MainTests {
         Self.mockWorkflowActionVariable(with: "")
         CommandLine.arguments[2] = "60"
         
-        let lastCheckedBefore = try XCTUnwrap(Self.lastCheckedFile)
+        let lastCheckedBefore = try XCTUnwrap(Self.lastChecked())
         _ = Updater.main()
-        let lastCheckedAfter = try XCTUnwrap(Self.lastCheckedFile)
+        let lastCheckedAfter = try XCTUnwrap(Self.lastChecked())
         
         XCTAssertEqual(lastCheckedBefore, lastCheckedAfter)
     }
@@ -105,9 +105,9 @@ extension MainTests {
         Self.mockWorkflowActionVariable(with: "")
         CommandLine.arguments[2] = "4"
         
-        let lastCheckedBefore = try XCTUnwrap(Self.lastCheckedFile)
+        let lastCheckedBefore = try XCTUnwrap(Self.lastChecked())
         _ = Updater.main()
-        let lastCheckedAfter = try XCTUnwrap(Self.lastCheckedFile)
+        let lastCheckedAfter = try XCTUnwrap(Self.lastChecked())
         
         XCTAssertNotEqual(lastCheckedBefore, lastCheckedAfter)
     }

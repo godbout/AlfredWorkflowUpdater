@@ -8,67 +8,35 @@
 
 ___
 
-# WOT IS THAT M8
+# What is that
 
-it's a library in Swift for you developers to easily add a way for your users to update your Workflow. i did that because Alfred Workflows deserve love with a capital l. (yes, both ls are minuscule.)
+It's a Command Line Tool that you embed in your Workflow. That is it.
+Then you call it from your Workflow and it does some magic.
 
-currently it only works with GitHub. the main reason for this is
+# Why
 
-# MANDATORY SCREENSHOT
+Who wants to go check GitHub or a forum post manually to update your Workflow hmm?
 
-a very professional demo:
+# OK, how does it work
 
-![Alfred Workflow Updater](https://github.com/godbout/AlfredWorkflowUpdater/blob/media/AlfredWorkflowUpdater.gif "Alfred Workflow Updater")
+You call Alfred Workflow Updater with 2 parameters:
+1. your GitHub repo, like: "[godbout/WooshyWindowToTheForeground](https://github.com/godbout/WooshyWindowToTheForeground)"
+2. the check frequency you want, in minutes, like: "60"
 
-# HOW TO INSTALL
+Alfred Workflow Updater will check if there's a file called `last_checked.plist` in your Workflow cache folder, and when was the last time the check was made.
+If the threshold is passed, Alfred Workflow Updater checks online if there's an update available for your Workflow, checking your current local Workflow version against the online latest version available on GitHub.
+If a an update is found, Alfred Workflow Updater drops an `update_available.plist` file in your Workflow cache folder. This file contains your latest release info (version, file URL, page URL).
 
-usual install through SPM. no idea for Carthage or CocoaPod. if you don't know how to use SPM please come back later.
+All you have to do is pick up that file and show the update whenever you want.
+Add an [item variable](https://www.alfredapp.com/help/workflows/inputs/script-filter/json/#variables) to your Alfred Result with the name "AlfredWorkflowUpdater_action" and the value "update".
+BOOM. Done.
 
-# HOW DOES IT WORK
+# Hmm, any screenshot?
 
-## check if an update for your Workflow is available
+Better, a video:
 
-```swift
-import AlfredWorkflowUpdater
+# Any concrete example?
 
-if let release = Updater.checkUpdate(for: "godbout/AlfredKat") {
-    print("\(release.version) available. download at \(release.file). release page at \(release.page)")
-}
-```
-
-## download and open the update
-
-```swift
-import AlfredWorkflowUpdater
-
-Updater.update(with: releaseFileURL)
-```
-
-more probably than not you would have passed the `releaseFileURL` as a [Variable](https://www.alfredapp.com/help/workflows/inputs/script-filter/json/#variables) after getting it back from `Updater.checkUpdater`.
-
-## notify user of imminent download approach
-
-currently AlfredWorkflowUpdater is dumbly built so it will block your script while the download is happening. as your script may send a notification only when it ends and returns results to Alfred, there might be a delay during which the user doesn't know what's happening. so the library provides a method to send a notification before the stupid blocking update.
-
-```swift
-import AlfredWorkflowUpdater
-
-Updater.notify(title: "Alfred Kat", message: "downloading your shit update...")
-```
-
-unfortunately currently the notification is ugly because its icon is not customizable because of macOS but also more because i'm lazy.
-
-![Ugly Notification](https://github.com/godbout/AlfredWorkflowUpdater/blob/media/UglyNotification.gif "Ugly Notification")
-
-## open stuff
-
-there's another method that is supposed to be there in case you want to give the option to the user to open the release page but you can use it to open anything else, like a Pandora's box. 
-
-```swift
-Updater.open(page: releasePageURL)
-```
-
-# THE FUTURE
-
-* background download
-* better notification, although might get rid of it completely if can show the download progress as an item (with ScriptFilter rerun) 
+Those Workflows are using the Alfred Workflow Updater:
+* [Alfred Kat](https://github.com/godbout/AlfredKat)
+* [Wooshy: Window to the Foreground!](https://github.com/godbout/WooshyWindowToTheForeground)

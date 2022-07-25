@@ -19,14 +19,13 @@ class AlfredWorkflowUpdaterTestCase: XCTestCase {
     }
         
         
-    // TODO: we can refactor a lot of stuff here ot make the thing more readable i think
-    static var updateAvailablePlistFilePath: String? {
+    static var updateAvailableFile: String? {
         guard let alfredWorkflowCache = ProcessInfo.processInfo.environment["alfred_workflow_cache"] else { return nil }
         
         return "\(alfredWorkflowCache)/update_available.plist"
     }
     
-    static var lastCheckedPlistFilePath: String? {
+    static var lastCheckedFile: String? {
         guard let alfredWorkflowCache = ProcessInfo.processInfo.environment["alfred_workflow_cache"] else { return nil }
         
         return "\(alfredWorkflowCache)/last_checked.plist"
@@ -74,12 +73,12 @@ class AlfredWorkflowUpdaterTestCase: XCTestCase {
     }
     
     static func mockAlreadyCreatedUpdateInfoFile(with releaseInfo: ReleaseInfo) throws {
-        let updateAvailablePlistFilePath = try XCTUnwrap(Self.updateAvailablePlistFilePath)
+        let updateAvailableFile = try XCTUnwrap(Self.updateAvailableFile)
         
         let encoder = PropertyListEncoder()
         guard let encoded = try? encoder.encode(releaseInfo) else { return XCTFail() }
         
-        FileManager.default.createFile(atPath: updateAvailablePlistFilePath, contents: encoded)
+        FileManager.default.createFile(atPath: updateAvailableFile, contents: encoded)
     }
     
     static func mockAlreadyCreatedUpdateInfoFile() {
@@ -97,21 +96,21 @@ class AlfredWorkflowUpdaterTestCase: XCTestCase {
     }
     
     static func mockLastChecked(toMinutesAgo minutes: Int) throws {
-        let lastCheckedPlistFilePath = try XCTUnwrap(Self.lastCheckedPlistFilePath)
+        let lastCheckedFile = try XCTUnwrap(Self.lastCheckedFile)
         
         let mockedDate = Calendar.current.date(byAdding: .minute, value: -minutes, to: Date())
         
         let encoder = PropertyListEncoder()
         guard let encoded = try? encoder.encode([mockedDate]) else { return }
         
-        guard let _ = try? FileManager.default.removeItem(atPath: lastCheckedPlistFilePath) else { return }
-        FileManager.default.createFile(atPath: lastCheckedPlistFilePath, contents: encoded)
+        guard let _ = try? FileManager.default.removeItem(atPath: lastCheckedFile) else { return }
+        FileManager.default.createFile(atPath: lastCheckedFile, contents: encoded)
     }
     
-    static func lastChecked() -> Date? {
-        guard let alfredWorkflowCache = ProcessInfo.processInfo.environment["alfred_workflow_cache"] else { return nil }
+    static func lastChecked() throws -> Date? {
+        let lastCheckedFile = try XCTUnwrap(Self.lastCheckedFile)
         
-        let url = URL(fileURLWithPath: "\(alfredWorkflowCache)/last_checked.plist")
+        let url = URL(fileURLWithPath: lastCheckedFile)
         guard let data = try? Data(contentsOf: url) else { return nil }
         
         let decoder = PropertyListDecoder()
@@ -159,10 +158,10 @@ extension AlfredWorkflowUpdaterTestCase {
     }
     
     private static func removeAlreadyCreatedUpdateInfoFile() throws {
-        let updateAvailablePlistFilePath = try XCTUnwrap(Self.updateAvailablePlistFilePath)
+        let updateAvailableFile = try XCTUnwrap(Self.updateAvailableFile)
         
-        if FileManager.default.fileExists(atPath: updateAvailablePlistFilePath) {
-            guard let _ = try? FileManager.default.removeItem(atPath: updateAvailablePlistFilePath) else { return XCTFail() }
+        if FileManager.default.fileExists(atPath: updateAvailableFile) {
+            guard let _ = try? FileManager.default.removeItem(atPath: updateAvailableFile) else { return XCTFail() }
         }
     }
     

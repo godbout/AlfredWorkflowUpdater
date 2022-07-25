@@ -2,7 +2,7 @@ import XCTest
 @testable import AlfredWorkflowUpdaterCore
 
 
-class deleteInfoCacheFileTests: AlfredWorkflowUpdaterTestCase {
+class DeleteInfoCacheFileTests: AlfredWorkflowUpdaterTestCase {
     
     func test_that_well_it_deletes_the_updateAvailable_plist_file() {
         Self.mockAlreadyCreatedUpdateInfoFile()

@@ -2,7 +2,7 @@ import XCTest
 @testable import AlfredWorkflowUpdaterCore
 
 
-class createInfoCacheFileTests: AlfredWorkflowUpdaterTestCase {
+class CreateInfoCacheFileTests: AlfredWorkflowUpdaterTestCase {
     
     func test_that_it_can_create_the_updateAvailable_plist_file() {
         let releaseInfo = ReleaseInfo(

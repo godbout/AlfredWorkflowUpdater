@@ -17,6 +17,14 @@ Then you call it from your Workflow and it does some magic.
 
 Who wants to go check GitHub or a forum post manually to update your Workflow hmm?
 
+# Features
+
+* checks for updates on GitHub in the background
+* only checks when necessary (frequency checks)
+* possibility to open your GitHub release page
+* download your latest release, move it to the Users' download folder, open the workflow
+* notifications of your download come from your Workflow, so it's non-blocking and uses your icon ✌🏼️
+
 # OK, how does it work
 
 You call Alfred Workflow Updater with 2 parameters:
@@ -39,6 +47,6 @@ https://user-images.githubusercontent.com/121373/180831445-2a6f61bc-4cd9-4277-9f
 
 # Any concrete example?
 
-Those Workflows are using the Alfred Workflow Updater:
+The following Workflows are using the Alfred Workflow Updater. Best is to download the Workfow, and check how it's made (it's simple):
 * [Alfred Kat](https://github.com/godbout/AlfredKat)
 * [Wooshy: Window to the Foreground!](https://github.com/godbout/WooshyWindowToTheForeground)

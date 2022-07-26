@@ -14,10 +14,16 @@ class AlfredWorkflowUpdaterTestCase: XCTestCase {
     }
     
     override func setUp() {
+        super.setUp()
+        
         try? Self.removeAlreadyCreatedUpdateInfoFile()
         Self.removeAlreadyDownloadedAlfredDummyWorkflowFromUserDownloadsFolder()
     }
-        
+    
+}
+
+
+extension AlfredWorkflowUpdaterTestCase {
         
     static var updateAvailableFile: String? {
         guard let alfredWorkflowCache = ProcessInfo.processInfo.environment["alfred_workflow_cache"] else { return nil }

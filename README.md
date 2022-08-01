@@ -29,7 +29,7 @@ Who wants to go check GitHub or a forum post manually to update your Workflow hm
 # OK, how does it work
 
 Alfred Workflow Updater writes a file called `last_checked.plist` in your Workflow cache folder that holds information about the last online check.
-When the threshold you specified as a argument (see above) is passed, Alfred Workflow Updater checks online if there's an update available for your Workflow, comparing your current local Workflow version against the online latest version available on GitHub.
+When the threshold you specified as a argument (see https://github.com/godbout/AlfredWorkflowUpdater#in-your-workflow-script) is passed, Alfred Workflow Updater checks online if there's an update available for your Workflow, comparing your current local Workflow version against the online latest version available on GitHub.
 If a an update is found, Alfred Workflow Updater drops an `update_available.plist` file in your Workflow cache folder. This file contains your latest release info (version, file URL, page URL).
 
 All you have to do is pick up that file and show the update whenever and however you want in your own Alfred Workflow.

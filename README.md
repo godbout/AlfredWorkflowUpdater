@@ -32,12 +32,12 @@ You call Alfred Workflow Updater with 2 parameters:
 1. your GitHub repo, like: "[godbout/WooshyWindowToTheForeground](https://github.com/godbout/WooshyWindowToTheForeground)"
 2. the check frequency you want, in minutes, like: "60"
 
-Alfred Workflow Updater writes a file called `last_checked.plist` in your Workflow cache folder that holds when the last online check was made.
-When the threshold is passed, Alfred Workflow Updater checks online if there's an update available for your Workflow, comparing your current local Workflow version against the online latest version available on GitHub.
+Alfred Workflow Updater writes a file called `last_checked.plist` in your Workflow cache folder that holds information about the last online check.
+When the threshold you specified as a argument (see above) is passed, Alfred Workflow Updater checks online if there's an update available for your Workflow, comparing your current local Workflow version against the online latest version available on GitHub.
 If a an update is found, Alfred Workflow Updater drops an `update_available.plist` file in your Workflow cache folder. This file contains your latest release info (version, file URL, page URL).
 
-All you have to do is pick up that file and show the update whenever you want.
-Add an [item variable](https://www.alfredapp.com/help/workflows/inputs/script-filter/json/#variables) to your Alfred Result with the name "AlfredWorkflowUpdater_action" and the value "update".
+All you have to do is pick up that file and show the update whenever and however you want in your own Alfred Workflow.
+Add an [item variable](https://www.alfredapp.com/help/workflows/inputs/script-filter/json/#variables) to your Alfred Result with the name `AlfredWorkflowUpdater_action` and the value `update`.
 BOOM. Done.
 
 # Hmm, any screenshot?
@@ -48,6 +48,6 @@ https://user-images.githubusercontent.com/121373/180831445-2a6f61bc-4cd9-4277-9f
 
 # Any concrete example?
 
-The following Workflows are using the Alfred Workflow Updater. Best is to download the Workfow, and check how it's made (it's simple):
+The following Workflows are using the Alfred Workflow Updater. Best is to download one of them, open it, and check how it's made (it's simple):
 * [Alfred Kat](https://github.com/godbout/AlfredKat)
 * [Wooshy: Window to the Foreground!](https://github.com/godbout/WooshyWindowToTheForeground)

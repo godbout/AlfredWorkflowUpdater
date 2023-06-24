@@ -136,6 +136,7 @@ extension Updater {
         let encoder = PropertyListEncoder()
         guard let encoded = try? encoder.encode(release) else { return }
         
+        try? FileManager.default.createDirectory(atPath: alfredWorkflowCache, withIntermediateDirectories: true)
         FileManager.default.createFile(atPath: updateAvailableFile, contents: encoded)
     }
     

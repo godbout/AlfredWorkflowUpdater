@@ -16,7 +16,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/scinfu/SwiftSoup",
-            from: "2.4.3"
+            from: "2.6.0"
         ),
     ],
     targets: [

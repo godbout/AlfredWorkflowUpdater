@@ -10,7 +10,8 @@ class AlfredWorkflowUpdaterTestCase: XCTestCase {
         mockAlfredPreferencesFolder()
         mockDummyWorkflowUID()
         mockAlfredWorkflowCacheFolder()
-        spoofArguments() 
+        mockAlfredWorkflowUpdaterAssetName()
+        spoofArguments()
     }
     
     override func setUp() {
@@ -148,6 +149,10 @@ extension AlfredWorkflowUpdaterTestCase {
         guard let alfredWorkflowUID = ProcessInfo.processInfo.environment["alfred_workflow_uid"] else { return XCTFail() }
 
         Self.setEnvironmentVariable(name: "alfred_workflow_cache", value: folder.path + "/Resources/Caches/\(alfredWorkflowUID)")
+    }
+    
+    private static func mockAlfredWorkflowUpdaterAssetName() {
+        Self.setEnvironmentVariable(name: "alfred_workflow_updater_asset_name", value: "AlfredDummy.alfredworkflow")
     }
         
     private static func spoofArguments() {

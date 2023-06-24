@@ -120,11 +120,11 @@ extension Updater {
         guard let releaseVersion = try? document.select(".octicon-tag + span").first()?.text() else { return nil }
         guard currentVersion().compare(releaseVersion, options: .numeric) == .orderedAscending else { return nil }
         
-        guard let releaseFile = try? document.select(".octicon-package + a").first()?.attr("href") else { return nil }
-        
+        guard let alfredWorkflowUpdaterAssetName = ProcessInfo.processInfo.environment["alfred_workflow_updater_asset_name"] else { return nil }
+
         return ReleaseInfo(
             version: releaseVersion,
-            file: "https://github.com\(releaseFile)",
+            file: "https://github.com/\(gitHubRepository)/releases/download/\(releaseVersion)/\(alfredWorkflowUpdaterAssetName)",
             page: releasePage
         )
     }

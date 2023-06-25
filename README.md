@@ -26,7 +26,7 @@ Who wants to go check GitHub or a forum post manually to update your Workflow hm
 * downloads your latest release, moves it to the Users' download folder, opens the workflow
 * notifications of your download come from your Workflow, so it's non-blocking and uses your icon ✌🏼️
 
-# OK, how does it work
+# OK, how does it work in real
 
 Alfred Workflow Updater writes a file called `last_checked.plist` in your Workflow cache folder that holds information about the last online check.
 When the threshold you specified as a argument (see [API](https://github.com/godbout/AlfredWorkflowUpdater#in-your-workflow-script)) is passed, Alfred Workflow Updater checks online if there's an update available for your Workflow, comparing your current local Workflow version against the online latest version available on GitHub.
@@ -44,9 +44,11 @@ https://user-images.githubusercontent.com/121373/180831445-2a6f61bc-4cd9-4277-9f
 
 ## in your Workflow Script
 
-Call the Alfred Workflow Updater tool with 2 parameters:
-1. your GitHub repo, like: "[godbout/WooshyWindowToTheForeground](https://github.com/godbout/WooshyWindowToTheForeground)"
-2. the frequency threshold in minutes, like "60"
+1. Call the Alfred Workflow Updater tool with 2 parameters:
+    * your GitHub repo, like: "[godbout/WooshyWindowToTheForeground](https://github.com/godbout/WooshyWindowToTheForeground)"
+    * the frequency threshold in minutes, like "60"
+
+2. Add an [`Environment Variable`](https://www.alfredapp.com/help/workflows/advanced/variables/#environment) called `alfred_workflow_updater_asset_name` that contains the name of your Alfred Workflow file as shown in the GitHub Releases. This is necessary because GitHub now loads assets dynamically and we can't grab the asset name through HTML scrapping.
 
 ## in your Alfred Results
 

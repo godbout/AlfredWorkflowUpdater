@@ -62,4 +62,3 @@ You do not need to pass any other variables with those Alfred Results. The Alfre
 
 The following Workflows are using the Alfred Workflow Updater. Best is to download one of them, open it, and check how it's made (it's simple):
 * [Alfred Kat](https://github.com/godbout/AlfredKat)
-* [Wooshy: Window to the Foreground!](https://github.com/godbout/WooshyWindowToTheForeground)
